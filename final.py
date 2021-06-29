@@ -35,13 +35,18 @@ for list in known_face_encodings:
     list=np.array(list)
 known_face_encodings=np.array(known_face_encodings)
 
-file_name=input("Enter the name of file in which you want to take the attendance: ")
+fcheck=[]
+for i in glob.glob('*.csv'):
+    fcheck.append(i)
+if len(fcheck)==0:
+    file_name=input("Enter the name of file in which you want to take the attendance: ")
 
-if(file_name[-4:]!=".csv"):
-    file_name+=".csv"
-with open(file_name,'w') as f:
-    pass
-
+    if(file_name[-4:]!=".csv"):
+        file_name+=".csv"
+    with open(file_name,'w') as f:
+        pass
+else:
+    file_name=fcheck[0]
 cap = cv2.VideoCapture(0)
 while True:
     flag=False
