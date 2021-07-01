@@ -31,7 +31,13 @@ for image in student_images:
     img=cv2.imread(image)
     img=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
     face_encoding.append((face_recognition.face_encodings(img)[0]))
-    name=(image.split('/')[-1]).split('.')[0] #Extract name from (data/Student_images/name.jpeg)-image
+    
+    
+    img_name=(image.split('/')[-1]).split('.')[0] #Extract name from (data/Student_images/name.jpeg)-image
+    name=""
+    name+=image[20:].split('.')[0]
+    print(name)
+    
     student_names.append(name)
 
 
