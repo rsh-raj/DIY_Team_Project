@@ -75,11 +75,12 @@ while True:
             if matches[best_match_index]:
                 name = known_face_names[best_match_index]
                 makeAttendanceEntry(name,file_name)
-                cv2.putText(unknown_image,"Match found, Proceeding to attention detection part",(left+10,top-10),cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2,cv2.LINE_AA)
+                #cv2.putText(unknown_image,"Match found, Proceeding to attention detection part",(left+10,top-10),cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2,cv2.LINE_AA)
                 flag=True
         cv2.imshow("", unknown_image)
         cv2.waitKey(1)
         if(flag):
+           # time.sleep(20)
             break
 
         
@@ -329,10 +330,10 @@ face_not_found_time=0
 total_time=0
 mtx,dist=cam_callibration()
 #customisation part
-choice=input("Do you want to receive drowsiness alert to keep you awake? Press Y for yes and N for no")
+choice=input("Do you want to receive drowsiness alert to keep you awake? Press Y for yes and N for no: ")
 choice=choice.upper()
 if choice=='Y':
-    user_time=input("After how much time do you want to receive update")
+    user_time=input("After how much time do you want to receive update(in sec): ")
 while True:
     start_time=time.time()
     total_time+=time.time()-start_time
@@ -378,13 +379,13 @@ while True:
                             drowsiness_time+=time.time()-start_time
                             print(drowsiness_time)
                             
-                            if not alarm_status and choice=="Y" and drowsiness_time>=user_time:
+                            if not alarm_status and choice=="Y" and int(drowsiness_time)>int(user_time):
                                 alarm_status = True
                                 t = Thread(target=alarm, args=('wake up',))
                                 t.deamon = True
                                 t.start()
 
-                            cv2.putText(img, "DROWSINESS ALERT!"+str(drowsiness_time), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                            cv2.putText(img, "Eye closed!", (150, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 20, 255), 2)
 
                     else:
                         COUNTER = 0
@@ -418,7 +419,7 @@ while True:
                         forward_time+=time.time()-start_time
                     if distance > YAWN_THRESH:
                         yawn_time+=time.time()-start_time
-                        cv2.putText(img, "Yawn Alert", (40, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                        cv2.putText(img, "Yawn Alert", (180, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                         alarm_status2 = True
                     else:
                         alarm_status2 = False
@@ -436,6 +437,7 @@ while True:
                 # Find Distance between index and Thumb
                 length, img, lineInfo = detector.findDistance(4, 8, img)
                 # print(length)
+
 
                 # Convert Volume
                 volBar = np.interp(length, [20, 150], [400, 150])
@@ -459,17 +461,17 @@ while True:
                     colorVol = (255, 0, 255)
 
                 # Drawings
-                cv2.rectangle(img, (50, 150), (85, 400), (2, 2, 2), 3)
-                cv2.rectangle(img, (50, int(volBar)), (85, 400), (255, 0, 0), cv2.FILLED)
+                cv2.rectangle(img, (50, 150), (85, 400), (255, 255, 255), 3)
+                cv2.rectangle(img, (50, int(volBar)), (85, 400), (255, 255, 0), cv2.FILLED)
                 cv2.putText(img, f'{int(volPer)} %', (40, 450), cv2.FONT_HERSHEY_COMPLEX,
                             1, (255, 0, 0), 3)
                 cVol = int(volume.GetMasterVolumeLevelScalar() * 100)
-                cv2.putText(img, f'Vol Set: {int(cVol)}', (400, 50), cv2.FONT_HERSHEY_COMPLEX,
+                cv2.putText(img, f'Current_volume: {int(cVol)}', (250, 100), cv2.FONT_HERSHEY_COMPLEX,
                             1, colorVol, 3)
 
         face_not_found_time+=(total_time-looking_right_time-looking_left_time-forward_time)
         cv2.putText(img, GAZE, (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 80), 2)
-        cv2.putText(img,"drowsiness_time="+str(round(drowsiness_time,2))+"   yawn_time="+str(round(yawn_time,2)), (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 80), 2)
+        cv2.putText(img,"Eye_closed_time="+str(round(drowsiness_time,2))+"   yawn_time="+str(round(yawn_time,2)), (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 80), 2)
         cv2.imshow("Head Pose", img)
 
         key = cv2.waitKey(10) & 0xFF
